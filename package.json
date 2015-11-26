@@ -9,6 +9,9 @@
   "author": "Surya Mattu",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.13.3"
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "mongodb-uri": "^0.9.7",
+    "mongoose": "^4.2.8"
   }
 }
