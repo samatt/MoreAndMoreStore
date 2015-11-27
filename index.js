@@ -91,7 +91,16 @@ router.route('/country/:country_id')
 
         });
     });
+router.route('/source-countries')
+.get(function(req,res){
+	// console.log(req);
+	var query = Country.find().exists('isInput',true).exec(function(error,data){
+		console.log("callback!",data)
+		res.json(data);
+	})
 
+})
+// Thing.where('name').exists(true)
 //Icon
 
 router.route('/icon')
