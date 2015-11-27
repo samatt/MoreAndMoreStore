@@ -13,10 +13,85 @@
     </head>
     <body>
         <p>Hello world! This is a placeholder for the More&More Store</p>
+        
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.10.2.min.js"><\/script>')</script>
+        <script type="text/javascript">
 
+        function src(){$("#source").show();$("#icons").hide();$("#countries").hide();}
+        
+        function icon(){$("#source").hide();$("#icons").show();$("#countries").hide();}
+
+		function dst(){console.log("here"); $("#source").hide();$("#icons").hide();$("#countries").show();}
+        function loadIcons(data){
+        	var html = "";
+
+        	for(d in data){
+        		var c = data[d];
+        		html+="<tr><td>"+c._id+"</td><td>"+c.url+"</td>"+"<td>"+c.category+"</td></tr>";
+        	}
+        	$("#icons").append(html);
+        }
+
+        function loadSourceCountries(data){
+        	var html = "";
+
+        	for(d in data){
+        		var c = data[d];
+        		// console.log(c.flag.substring(0,c.flag.length));
+        		var img="<img src="+c.flag+">";
+        		html+="<tr><td>"+c.name+"</td><td>"+c._id+"</td>"+"<td>"+img+"</td></tr>";
+        	}
+        	$("#source").append(html);
+        }
+
+        function loadCountries(data){
+        	var html = "";
+
+        	for(d in data){
+        		var c = data[d];
+        		// console.log(c.flag.substring(0,c.flag.length));
+        		var img="<img src="+c.flag+">";
+        		html+="<tr><td>"+c.name+"</td><td>"+c._id+"</td>"+"<td>"+img+"</td></tr>";
+        	}
+        	$("#countries").append(html);
+        }
+        $.ajax({type: "GET",url: "/api/country",}).done(loadCountries);
+		$.ajax({type: "GET",url: "/api/icon",}).done(loadIcons);
+		$.ajax({type: "GET",url: "/api/source-countries",}).done(loadSourceCountries);
+			
+        </script>
+        <button onclick="src()">Source Countries</button>
+        <button onclick="dst()">All Countries</button>
+        <button onclick="icon()">Icons</button>
+        <table >
+        	<tbody id = "source">
+        	<th>Name</th>
+        	<th>ID</th>
+        	<th>Flag</th>
+        		
+        	</tbody>
+        </table>
+
+        <table >
+        	<tbody id = "countries">
+        	<th>Name</th>
+        	<th>ID</th>
+        	<th>Flag</th>
+        		
+        	</tbody>
+        </table>
+
+        <table >
+        	<tbody id = "icons">
+        	<th>Name</th>
+        	<th>URL</th>
+        	<th>Path</th>
+        	<!-- <th>Flag</th> -->
+        		
+        	</tbody>
+        </table>
 
     </body>
 </html>
