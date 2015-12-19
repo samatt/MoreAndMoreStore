@@ -6,9 +6,10 @@ var uriUtil = require('mongodb-uri');
 var Country = require('./app/models/country');
 var Icon = require('./app/models/icon');
 var fs = require('fs');
+var cors = require('cors');
 // var utils = require('./mmutils');
 
-
+app.use(cors());
 var options ={
 	user:"test",
 	pass:"test"
