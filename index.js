@@ -61,8 +61,13 @@ router.route('/country')
         Country.find(function(err, countries) {
             if (err)
                 res.send(err);
-
-            res.json(countries);
+           
+            var data = {}
+           	for(c in countries){
+           		data[countries._id] = c;
+           	}
+           	
+            res.json(data);
         });
     });
 router.route('/country/:country_id')
@@ -99,6 +104,20 @@ router.route('/where-countries')
 		console.log("callback!",data)
 		res.json(data);
 	})
+
+})
+
+router.route('/from-countries')
+.post(function(req,res){
+	// console.log(req);
+	var icon = new Icon();      // create a new instance of the Bear model
+	    icon._id = req.body.where;  // set the bears name (comes from the request)
+	    icon.url = req.body.icon;
+
+	// var query = Country.find().exists('isInput',true).exec(function(error,data){
+	// 	console.log("callback!",data)
+	// 	res.json(data);
+	// })
 
 })
 // Thing.where('name').exists(true)
