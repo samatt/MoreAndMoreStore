@@ -14,7 +14,8 @@ var options ={
 	user:"test",
 	pass:"test"
 }
-var mongodbUri = process.env.MONGOLAB_URI;//"mongodb://test:test@ds059804.mongolab.com:59804/heroku_0s4s2f6j";
+//process.env.MONGOLAB_URI;//
+var mongodbUri = "mongodb://test:test@ds059804.mongolab.com:59804/heroku_0s4s2f6j";
 var mongooseUri = uriUtil.formatMongoose(mongodbUri);
 console.log(mongooseUri)
 mongoose.connect(mongooseUri);
@@ -64,9 +65,8 @@ router.route('/country')
            
             var data = {}
            	for(c in countries){
-           		data[countries._id] = c;
+           		data[countries[c]._id] = countries[c];
            	}
-           	
             res.json(data);
         });
     });
