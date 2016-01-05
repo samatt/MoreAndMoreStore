@@ -92,7 +92,7 @@ router.route('/country/:country_id')
 
         });
     });
-router.route('/source-countries')
+router.route('/where-countries')
 .get(function(req,res){
 	// console.log(req);
 	var query = Country.find().exists('isInput',true).exec(function(error,data){
