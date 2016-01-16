@@ -4,7 +4,8 @@ var Schema       = mongoose.Schema;
 var IconSchema   = new Schema({
     _id: String,
     url :String,
-    category : String
+    category : String,
+    sprite: Schema.Types.Mixed
 });
 
 IconSchema.virtual('name').get(function() {

@@ -15,7 +15,10 @@ var options ={
 	pass:"test"
 }
 //process.env.MONGOLAB_URI;//
-var mongodbUri = "mongodb://test:test@ds059804.mongolab.com:59804/heroku_0s4s2f6j";
+// need to set this on the local shell
+//export MONGOLAB_URI="mongodb://test:test@ds059804.mongolab.com:59804/heroku_0s4s2f6j"
+
+var mongodbUri =process.env.MONGOLAB_URI; // "mongodb://test:test@ds059804.mongolab.com:59804/heroku_0s4s2f6j";
 var mongooseUri = uriUtil.formatMongoose(mongodbUri);
 console.log(mongooseUri)
 mongoose.connect(mongooseUri);
@@ -24,10 +27,6 @@ mongoose.connect(mongooseUri);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-
-
-
-// mongodb://heroku_0s4s2f6j:m0re&m0rest0re@ds059804.mongolab.com:59804/heroku_0s4s2f6j
 app.set('port',(process.env.PORT || 5000));
 
 app.use(express.static(__dirname+'/public'));
@@ -143,8 +142,12 @@ router.route('/icon')
         Icon.find(function(err, icons) {
             if (err)
                 res.send(err);
-
-            res.json(icons);
+            var data = {}
+           	for(c in icons){
+           		data[icons[c]._id] = icons[c];
+           	}
+            res.json(data);
+            // res.json(icons);
         });
     });
 
@@ -159,18 +162,16 @@ router.route('/icon/:icon_id')
 	.put(function(req, res) {
 
         // use our bear model to find the bear we want
-        Icon.findById(req.params.icon_id, function(err, country) {
+        Icon.findById(req.params.icon_id, function(err, icon) {
             if (err)
                 res.send(err);
 
-            country.name = req.body.name;  // update the bears info
-
-            // save the bear
-            country.save(function(err) {
+            icon.sprite = req.body;  // update the bears info
+            console.log(icon._id);
+            icon.save(function(err) {
                 if (err)
                     res.send(err);
-
-                res.json({ message: 'Country updated!' });
+                res.json({ message: 'Icon'+ icon._id+' updated!' });
             });
 
         });
