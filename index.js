@@ -7,7 +7,29 @@ var Country = require('./app/models/country');
 var Icon = require('./app/models/icon');
 var fs = require('fs');
 var cors = require('cors');
-// var utils = require('./mmutils');
+var request = require('request');
+
+function getProducts(src,dst,cb){
+	req = "http://atlas.media.mit.edu/hs07/import/2010.2012/"+src+"/"+dst+"/all";
+	console.log(req);
+request(req, function (error, response, body) {
+	  if (!error && response.statusCode == 200) {
+	  		items =  JSON.parse(body)['data']
+	  		var icons = []
+	  		for (var i = 0; i < items.length; i++) {
+	  			console.log( items[i]['hs07_id'].substring(0,4));
+  				var hs_code = items[i]['hs07_id'].substring(0,4);
+  				if( icons.indexOf(hs_code) === -1){
+  					console.log( hs_code);
+  					icons.push(hs_code);
+  				}
+	  		};
+	  	cb.json(icons);
+	  }
+	})
+
+	console.log("here");
+}
 
 app.use(cors());
 var options ={
@@ -20,7 +42,7 @@ var options ={
 
 var mongodbUri =process.env.MONGOLAB_URI; // "mongodb://test:test@ds059804.mongolab.com:59804/heroku_0s4s2f6j";
 var mongooseUri = uriUtil.formatMongoose(mongodbUri);
-console.log(mongooseUri)
+
 mongoose.connect(mongooseUri);
 
 
@@ -147,6 +169,7 @@ router.route('/icon')
            		data[icons[c]._id] = icons[c];
            	}
             res.json(data);
+
             // res.json(icons);
         });
     });
@@ -176,6 +199,16 @@ router.route('/icon/:icon_id')
 
         });
     });
+router.route('/products/:src/:dst')
+	.get(function(req,res){
+	var src = req.params.src;
+	var dst = req.params.dst;
+
+	console.log(req.params);	
+	var data = getProducts(src,dst,res);	
+	// res.json(data);
+
+	})
 app.use('/api', router);
 
 app.listen(app.get('port'),function(){
