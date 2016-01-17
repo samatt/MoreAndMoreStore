@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var uriUtil = require('mongodb-uri');
 var Country = require('./app/models/country');
 var Icon = require('./app/models/icon');
+var Order = require('./app/models/order');
 var fs = require('fs');
 var cors = require('cors');
 var request = require('request');
@@ -141,7 +142,35 @@ router.route('/from-countries')
 	// })
 
 })
-// Thing.where('name').exists(true)
+
+//Order
+router.route('/order')
+	.post(function(req, res) {
+	    
+	    var order = new Order();      // create a new instance of the Bear model
+	    order.name = req.body.name;  // set the bears name (comes from the request)
+	    order.from = req.body.from;
+	    order.where = req.body.where;
+	    order.email = req.body.email;
+	    order.phone = req.body.phone;
+
+	    // save the bear and check for errors
+	    order.save(function(err) {
+	        if (err)
+	            res.send(err);
+
+	        res.json({ message: 'order '+ order.name+' created!' });
+	    });
+	    
+	})
+   .get(function(req, res) {
+        Order.find(function(err, orders) {
+            if (err)
+                res.send(err);
+            res.json(orders);
+        });
+    });
+
 //Icon
 
 router.route('/icon')
