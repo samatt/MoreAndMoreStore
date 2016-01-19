@@ -9,10 +9,24 @@ var Order = require('./app/models/order');
 var fs = require('fs');
 var cors = require('cors');
 var request = require('request');
+var icon_map = {}
+Icon.find(function(err, icons) {
+    if (err)
+        res.send(err);
+    var data = {}
+   	for(c in icons){
+   		data[icons[c]._id] = icons[c];
+   	}
+   	console.log(data)
+   	icon_map = data;
+    // res.json(data);
 
+    // res.json(icons);
+});
 function getProducts(src,dst,cb){
 	req = "http://atlas.media.mit.edu/hs07/import/2010.2012/"+src+"/"+dst+"/all";
 	console.log(req);
+	icon_keys = Object.keys(icon_map);
 request(req, function (error, response, body) {
 	  if (!error && response.statusCode == 200) {
 	  		items =  JSON.parse(body)['data']
@@ -20,6 +34,10 @@ request(req, function (error, response, body) {
 	  		for (var i = 0; i < items.length; i++) {
 	  			console.log( items[i]['hs07_id'].substring(0,4));
   				var hs_code = items[i]['hs07_id'].substring(0,4);
+  				if( icon_keys.indexOf(hs_code) === -1){
+  					console.log(hs_code, 'missing in icons db so ignoring');
+  					continue;
+  				}
   				if( icons.indexOf(hs_code) === -1){
   					console.log( hs_code);
   					icons.push(hs_code);
