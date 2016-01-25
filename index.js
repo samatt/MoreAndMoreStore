@@ -50,10 +50,11 @@ function getProducts(src,dst,cb){
 		  		var missing = [];
 		  		var missing_obj = [];
 		  		for (var i = 0; i < items.length; i++) {
-	  				var hs_code = items[i]['hs07_id'].substring(1,5);
+		  			console.log(items[i]['hs07_id'])
+	  				var hs_code = items[i]['hs07_id'].substring(2,6);
 	  				if( icon_keys.indexOf(hs_code) === -1){
-	  					if( missing.indexOf(items[i]['hs07_id'].substring(1,5)) === -1){
-	  						missing.push(items[i]['hs07_id'].substring(1,5));
+	  					if( missing.indexOf(items[i]['hs07_id'].substring(2,6)) === -1){
+	  						missing.push(items[i]['hs07_id'].substring(2,6));
 	  					}
 	  				}	
 	  				else{
@@ -61,9 +62,9 @@ function getProducts(src,dst,cb){
 	  				}
 
 		  		};
-		  		console.log( 'missing',missing);
-		  		cb.json(eliminateDuplicates(icons));
-		  		// cb.json({'icons':eliminateDuplicates(icons),'missing':missing});
+		  		// console.log( 'missing',missing);
+		  		// cb.json(eliminateDuplicates(icons));
+		  		cb.json({'icons':eliminateDuplicates(icons),'missing':missing});
 		  }
 		})
 	console.log("here");
