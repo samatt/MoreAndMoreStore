@@ -17,38 +17,88 @@ Icon.find(function(err, icons) {
    	for(c in icons){
    		data[icons[c]._id] = icons[c];
    	}
-   	console.log(data)
+   	// console.log(Object.keys(data).length)
    	icon_map = data;
+   	// console.log(Object.keys(icon_map));
     // res.json(data);
 
     // res.json(icons);
 });
+function eliminateDuplicates(arr) {
+  var i,
+      len=arr.length,
+      out=[],
+      obj={};
+ 
+  for (i=0;i<len;i++) {
+    obj[arr[i]]=0;
+  }
+  for (i in obj) {
+    out.push(i);
+  }
+  return out;
+}
 function getProducts(src,dst,cb){
 	req = "http://atlas.media.mit.edu/hs07/import/2010.2012/"+src+"/"+dst+"/all";
-	console.log(req);
+	// console.log(req);
 	icon_keys = Object.keys(icon_map);
-request(req, function (error, response, body) {
-	  if (!error && response.statusCode == 200) {
-	  		items =  JSON.parse(body)['data']
-	  		var icons = []
-	  		for (var i = 0; i < items.length; i++) {
-	  			console.log( items[i]['hs07_id'].substring(0,4));
-  				var hs_code = items[i]['hs07_id'].substring(0,4);
-  				if( icon_keys.indexOf(hs_code) === -1){
-  					console.log(hs_code, 'missing in icons db so ignoring');
-  					continue;
-  				}
-  				if( icons.indexOf(hs_code) === -1){
-  					console.log( hs_code);
-  					icons.push(hs_code);
-  				}
-	  		};
-	  	cb.json(icons);
-	  }
-	})
+	// console.log('here',icon_keys.indexOf('0208'),'0208')
+	request(req, function (error, response, body) {
+		  if (!error && response.statusCode == 200) {
+		  		items =  JSON.parse(body)['data']
+		  		var icons = [];
+		  		var missing = [];
+		  		var missing_obj = [];
+		  		for (var i = 0; i < items.length; i++) {
+	  				var hs_code = items[i]['hs07_id'].substring(1,5);
+	  				if( icon_keys.indexOf(hs_code) === -1){
+	  					if( missing.indexOf(items[i]['hs07_id'].substring(1,5)) === -1){
+	  						missing.push(items[i]['hs07_id'].substring(1,5));
+	  					}
+	  				}	
+	  				else{
+	  					icons.push(hs_code);
+	  				}
+
+		  		};
+		  		console.log( 'missing',missing);
+		  		cb.json({'icons':eliminateDuplicates(icons),'missing':missing});
+		  }
+		})
+	console.log("here");
+}
+
+function getProducts_debug(src,dst,cb){
+	req = "http://atlas.media.mit.edu/hs07/import/2000.2012/"+src+"/"+dst+"/all";
+	// console.log(req);
+	icon_keys = Object.keys(icon_map);
+	// console.log('here',icon_keys.indexOf('0208'),'0208')
+	request(req, function (error, response, body) {
+		  if (!error && response.statusCode == 200) {
+		  		items =  JSON.parse(body)['data']
+		  		var icons = [];
+		  		var missing = [];
+		  		var missing_obj = [];
+		  		for (var i = 0; i < items.length; i++) {
+	  				var hs_code = items[i]['hs07_id'].substring(0,4);
+	  				if( icon_keys.indexOf(hs_code) === -1){
+	  					if( missing.indexOf(items[i]['hs07_id'].substring(0,4)) === -1){
+	  						missing.push(items[i]['hs07_id'].substring(0,4));
+	  					}
+	  				}	
+	  				else{
+	  					icons.push(hs_code);
+	  				}
+
+		  		};
+		  		console.log( 'missing',missing);
+		  		cb.json(eliminateDuplicates(icons));
+		  }
+		})
 
 	console.log("here");
 }
+
 
 app.use(cors());
 var options ={
@@ -253,6 +303,16 @@ router.route('/products/:src/:dst')
 
 	console.log(req.params);	
 	var data = getProducts(src,dst,res);	
+	// res.json(data);
+
+	})
+router.route('/products/debug/:src/:dst')
+	.get(function(req,res){
+	var src = req.params.src;
+	var dst = req.params.dst;
+
+	console.log(req.params);	
+	var data = getProducts_debug(src,dst,res);	
 	// res.json(data);
 
 	})
