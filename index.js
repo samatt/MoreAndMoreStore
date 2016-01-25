@@ -63,8 +63,8 @@ function getProducts(src,dst,cb){
 
 		  		};
 		  		// console.log( 'missing',missing);
-		  		// cb.json(eliminateDuplicates(icons));
-		  		cb.json({'icons':eliminateDuplicates(icons),'missing':missing});
+		  		cb.json(eliminateDuplicates(icons));
+		  		// cb.json({'icons':eliminateDuplicates(icons),'missing':missing});
 		  }
 		})
 	console.log("here");
