@@ -16,6 +16,6 @@
     "mongodb-uri": "^0.9.7",
     "mongoose": "^4.2.8",
     "request": "^2.67.0",
-    "requestify": "^0.1.17",
+    "requestify": "^0.1.17"
   }
 }
