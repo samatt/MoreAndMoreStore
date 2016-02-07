@@ -57,12 +57,16 @@
         	$("#countries").append(html);
         }
         
-        $.ajax({type: "GET",url: "http://moreandmorestore.herokuapp.com/api/country",}).done(function(data){ console.log(data);})
+        // $.ajax({type: "GET",url: "http://moreandmorestore.herokuapp.com/api/country",}).done(function(data){ console.log(data);})
         $.ajax({type: "GET",url: "/api/country",}).done(loadCountries);
         $.ajax({type: "GET",url: "/api/icon",}).done(loadIcons);
-        $.ajax({type: "GET",url: "/api/source-countries",}).done(loadSourceCountries);
-
-        $.ajax({type: "GET",url: "http://atlas.media.mit.edu/hs07/import/2010.2012/usa/all/show",}).done(function(data){ console.log(data);})
+        // $.ajax({type: "GET",url: "/api/source-countries",}).done(loadSourceCountries);
+        // $.ajax({type: "GET",url: "/api/products/usa/chn"}).done(function(data){ console.log(data);})
+        $.post( "/api/order", { name: "Andy", email: "test@john.com",from:'usa',where:'chn','product':'0101' })
+          .done(function( data ) {
+            console.log('done');
+          });
+        // $.ajax({type: "GET",url: "http://atlas.media.mit.edu/hs07/import/2010.2012/usa/all/show",}).done(function(data){ console.log(data);})
 
     </script>
     <button onclick="src()">Source Countries</button>

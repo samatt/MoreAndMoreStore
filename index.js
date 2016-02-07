@@ -91,7 +91,6 @@ function getProducts_debug(src,dst,cb){
 	  				else{
 	  					icons.push(hs_code);
 	  				}
-
 		  		};
 		  		console.log( 'missing',missing);
 		  		cb.json(eliminateDuplicates(icons));
@@ -111,7 +110,8 @@ var options ={
 // need to set this on the local shell
 //export MONGOLAB_URI="mongodb://test:test@ds059804.mongolab.com:59804/heroku_0s4s2f6j"
 
-var mongodbUri =process.env.MONGOLAB_URI; // "mongodb://test:test@ds059804.mongolab.com:59804/heroku_0s4s2f6j";
+var mongodbUri =process.env.MONGOLAB_URI; 
+// var mongodbUri ="mongodb://test:test@ds059804.mongolab.com:59804/heroku_0s4s2f6j";
 var mongooseUri = uriUtil.formatMongoose(mongodbUri);
 
 mongoose.connect(mongooseUri);
@@ -222,7 +222,7 @@ router.route('/order')
 	    order.from = req.body.from;
 	    order.where = req.body.where;
 	    order.email = req.body.email;
-	    order.phone = req.body.phone;
+	    order.product = req.body.product;
 
 	    // save the bear and check for errors
 	    order.save(function(err) {
