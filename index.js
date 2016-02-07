@@ -247,17 +247,6 @@ router.route('/order')
 		  text: 'Hi '+order.name+'! \n Here\'s your order\n'+'Email: '+order.email+'\n'+'From: '+order.from+'\n'+'Where: '+order.where+'\n'+'What: '+order.product+'\n'
 		};
 
-		mailgun.messages().send(email, function (error, body) {
-		if (error){
-			order.sentEmail = false;
-			console.log(error);
-		}
-		else{
-			console.log(body);
-			order.sentEmail = true;
-		}
-            
-		});
 	    // save the bear and check for errors
 	    order.save(function(err) {
 	        if (err)
@@ -265,7 +254,9 @@ router.route('/order')
 
 	     	res.json({ message: 'order '+ order.name+' created!' });
 			
-
+			mailgun.messages().send(email, function (error, body) {
+			  console.log(body);
+			});
 	    });
 	    
 	})
