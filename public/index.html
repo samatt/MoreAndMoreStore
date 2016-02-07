@@ -62,7 +62,7 @@
         $.ajax({type: "GET",url: "/api/icon",}).done(loadIcons);
         // $.ajax({type: "GET",url: "/api/source-countries",}).done(loadSourceCountries);
         // $.ajax({type: "GET",url: "/api/products/usa/chn"}).done(function(data){ console.log(data);})
-        $.post( "/api/order", { name: "Andy", email: "test@john.com",from:'usa',where:'chn','product':'0101' })
+        $.post( "/api/order", { name: "Surya", email: "surya@suryamattu.com",from:'usa',where:'chn','product':'0101' })
           .done(function( data ) {
             console.log('done');
           });
