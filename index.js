@@ -10,6 +10,22 @@ var fs = require('fs');
 var cors = require('cors');
 var request = require('request');
 var icon_map = {}
+///
+var api_key = 'key-f7c685c72f52ceca14d18d51bcc67175';
+var domain = 'sandboxb7baad539ec24447a3a4f0ce844f4efb.mailgun.org';
+var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
+ 
+// var data = {
+//   from: 'Excited User <postmaster@sandboxb7baad539ec24447a3a4f0ce844f4efb.mailgun.org>',
+//   to: 'surya@suryamattu.com',
+//   subject: 'Hello',
+//   text: 'Testing some Mailgun awesomness!'
+// };
+ 
+// mailgun.messages().send(data, function (error, body) {
+//   console.log(body);
+// });
+///
 Icon.find(function(err, icons) {
     if (err)
         res.send(err);
@@ -224,12 +240,32 @@ router.route('/order')
 	    order.email = req.body.email;
 	    order.product = req.body.product;
 
+		var email = {
+		  from: 'More and More Store <postmaster@sandboxb7baad539ec24447a3a4f0ce844f4efb.mailgun.org>',
+		  to: order.email,
+		  subject: 'Your Order',
+		  text: 'Hi '+order.name+'! \n Here\'s your order\n'+'Email: '+order.email+'\n'+'From: '+order.from+'\n'+'Where: '+order.where+'\n'+'What: '+order.product+'\n'
+		};
+
+		mailgun.messages().send(email, function (error, body) {
+		if (error){
+			order.sentEmail = false;
+			console.log(error);
+		}
+		else{
+			console.log(body);
+			order.sentEmail = true;
+		}
+            
+		});
 	    // save the bear and check for errors
 	    order.save(function(err) {
 	        if (err)
 	            res.send(err);
 
-	        res.json({ message: 'order '+ order.name+' created!' });
+	     	res.json({ message: 'order '+ order.name+' created!' });
+			
+
 	    });
 	    
 	})

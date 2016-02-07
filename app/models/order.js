@@ -9,6 +9,7 @@ var OrderSchema   = new Schema({
     email:String,
     phone:String,
     prodcut:String,
+    sentEmail:Boolean,
     
 });
 
