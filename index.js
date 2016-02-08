@@ -12,20 +12,9 @@ var request = require('request');
 var icon_map = {}
 ///
 var api_key = 'key-f7c685c72f52ceca14d18d51bcc67175';
-var domain = 'sandboxb7baad539ec24447a3a4f0ce844f4efb.mailgun.org';
+var domain = 'mg.moreandmore.world';
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: domain});
  
-// var data = {
-//   from: 'Excited User <postmaster@sandboxb7baad539ec24447a3a4f0ce844f4efb.mailgun.org>',
-//   to: 'surya@suryamattu.com',
-//   subject: 'Hello',
-//   text: 'Testing some Mailgun awesomness!'
-// };
- 
-// mailgun.messages().send(data, function (error, body) {
-//   console.log(body);
-// });
-///
 Icon.find(function(err, icons) {
     if (err)
         res.send(err);
@@ -33,13 +22,10 @@ Icon.find(function(err, icons) {
    	for(c in icons){
    		data[icons[c]._id] = icons[c];
    	}
-   	// console.log(Object.keys(data).length)
    	icon_map = data;
-   	// console.log(Object.keys(icon_map));
-    // res.json(data);
-
-    // res.json(icons);
 });
+
+
 function eliminateDuplicates(arr) {
   var i,
       len=arr.length,
@@ -54,11 +40,10 @@ function eliminateDuplicates(arr) {
   }
   return out;
 }
+
 function getProducts(src,dst,cb){
 	req = "http://atlas.media.mit.edu/hs07/import/2010.2012/"+src+"/"+dst+"/all";
-	// console.log(req);
 	icon_keys = Object.keys(icon_map);
-	// console.log('here',icon_keys.indexOf('0208'),'0208')
 	request(req, function (error, response, body) {
 		  if (!error && response.statusCode == 200) {
 		  		items =  JSON.parse(body)['data']
@@ -76,11 +61,8 @@ function getProducts(src,dst,cb){
 	  				else{
 	  					icons.push(hs_code);
 	  				}
-
 		  		};
-		  		// console.log( 'missing',missing);
 		  		cb.json(eliminateDuplicates(icons));
-		  		// cb.json({'icons':eliminateDuplicates(icons),'missing':missing});
 		  }
 		})
 	console.log("here");
@@ -127,44 +109,34 @@ var options ={
 //export MONGOLAB_URI="mongodb://test:test@ds059804.mongolab.com:59804/heroku_0s4s2f6j"
 
 var mongodbUri =process.env.MONGOLAB_URI; 
-// var mongodbUri ="mongodb://test:test@ds059804.mongolab.com:59804/heroku_0s4s2f6j";
 var mongooseUri = uriUtil.formatMongoose(mongodbUri);
 
 mongoose.connect(mongooseUri);
 
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 app.set('port',(process.env.PORT || 5000));
-
 app.use(express.static(__dirname+'/public'));
-
-
-
 
 var router = express.Router(); 
 router.get('/', function(req, res) {
     res.json({ message: 'hooray! welcome to our api!' });   
 });
 
-// Country
+/* Country */
 router.route('/country')
 	.post(function(req, res) {
 	    
-	    var country = new Country();      // create a new instance of the Bear model
-	    country.name = req.body.name;  // set the bears name (comes from the request)
+	    var country = new Country();
+	    country.name = req.body.name;
 	    country._id = req.body.id;
 	    country.flag = req.body.flag;
 	    if(req.body.isInput) country.isInput = req.body.isInput;
-	    // save the bear and check for errors
 	    country.save(function(err) {
 	        if (err)
 	            res.send(err);
-
 	        res.json({ message: 'Country '+ country.name+' created!' });
 	    });
-	    
 	})
    .get(function(req, res) {
         Country.find(function(err, countries) {
@@ -178,6 +150,8 @@ router.route('/country')
             res.json(data);
         });
     });
+
+
 router.route('/country/:country_id')
 	.get(function(req,res){
 		Country.findById(req.params.country_id,function(err,country){
@@ -187,24 +161,19 @@ router.route('/country/:country_id')
 		})
 	})
 	.put(function(req, res) {
-
-        // use our bear model to find the bear we want
         Country.findById(req.params.country_id, function(err, country) {
             if (err)
                 res.send(err);
-
-            country.name = req.body.name;  // update the bears info
-
-            // save the bear
+            country.name = req.body.name;
             country.save(function(err) {
                 if (err)
                     res.send(err);
-
                 res.json({ message: 'Country updated!' });
             });
-
         });
     });
+
+/* Where Countries: Countries to ship the product */
 router.route('/where-countries')
 .get(function(req,res){
 	// console.log(req);
@@ -241,10 +210,10 @@ router.route('/order')
 	    order.product = req.body.product;
 
 		var email = {
-		  from: 'More and More Store <postmaster@sandboxb7baad539ec24447a3a4f0ce844f4efb.mailgun.org>',
+		  from: 'More and More Store <postmaster@mg.moreandmore.world>',
 		  to: order.email,
 		  subject: 'Your Order',
-		  text: 'Hi '+order.name+'! \n Here\'s your order\n'+'Email: '+order.email+'\n'+'From: '+order.from+'\n'+'Where: '+order.where+'\n'+'What: '+order.product+'\n'
+		  text: 'Hi '+order.name+'! \n\r Here\'s your order\n'+'Email: '+order.email+'\n'+'From: '+order.from+'\n'+'Where: '+order.where+'\n'+'What: '+order.product+'\n'
 		};
 
 	    // save the bear and check for errors
@@ -253,7 +222,6 @@ router.route('/order')
 	            res.send(err);
 
 	     	res.json({ message: 'order '+ order.name+' created!' });
-			
 			mailgun.messages().send(email, function (error, body) {
 			  console.log(body);
 			});
@@ -272,16 +240,13 @@ router.route('/order')
 
 router.route('/icon')
 	.post(function(req, res) {
-	    
-	    var icon = new Icon();      // create a new instance of the Bear model
-	    icon._id = req.body.id;  // set the bears name (comes from the request)
+	    var icon = new Icon();      
+	    icon._id = req.body.id;  
 	    icon.url = req.body.url;
 	    icon.category = req.body.category;
-	    // save the bear and check for errors
 	    icon.save(function(err) {
 	        if (err)
 	            res.send(err);
-
 	        res.json({ message: 'Icon '+ icon._id+ ' created!' });
 	    });
 	    
@@ -295,8 +260,6 @@ router.route('/icon')
            		data[icons[c]._id] = icons[c];
            	}
             res.json(data);
-
-            // res.json(icons);
         });
     });
 
@@ -309,22 +272,18 @@ router.route('/icon/:icon_id')
 		})
 	})
 	.put(function(req, res) {
-
-        // use our bear model to find the bear we want
         Icon.findById(req.params.icon_id, function(err, icon) {
             if (err)
                 res.send(err);
-
-            icon.sprite = req.body;  // update the bears info
-            console.log(icon._id);
+            icon.sprite = req.body;
             icon.save(function(err) {
                 if (err)
                     res.send(err);
                 res.json({ message: 'Icon'+ icon._id+' updated!' });
             });
-
         });
     });
+
 router.route('/products/:src/:dst')
 	.get(function(req,res){
 	var src = req.params.src;
