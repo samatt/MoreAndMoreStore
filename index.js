@@ -208,14 +208,19 @@ router.route('/order')
 	    order.where = req.body.where;
 	    order.email = req.body.email;
 	    order.product = req.body.product;
-
+	    var email_text = "Hi "+order.name+"! \n\r Thanks for your swimsuit order depicting HS"+order.product+" from "+order.from.toUpperCase()+" to "+order.where.toUpperCase()+". \n\rWe'll follow up with payment and shipping details shortly.\n\r Always,\n\rMore&More Store";
+		// var email = {
+		//   from: 'More and More Store <postmaster@mg.moreandmore.world>',
+		//   to: order.email,
+		//   subject: 'Your Order',
+		//   text: 'Hi '+order.name+'! \n\r Here\'s your order\n'+'Email: '+order.email+'\n'+'From: '+order.from+'\n'+'Where: '+order.where+'\n'+'What: '+order.product+'\n'
+		// };
 		var email = {
 		  from: 'More and More Store <postmaster@mg.moreandmore.world>',
 		  to: order.email,
 		  subject: 'Your Order',
-		  text: 'Hi '+order.name+'! \n\r Here\'s your order\n'+'Email: '+order.email+'\n'+'From: '+order.from+'\n'+'Where: '+order.where+'\n'+'What: '+order.product+'\n'
+		  text: email_text
 		};
-
 	    // save the bear and check for errors
 	    order.save(function(err) {
 	        if (err)
