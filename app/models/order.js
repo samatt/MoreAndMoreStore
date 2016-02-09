@@ -8,7 +8,7 @@ var OrderSchema   = new Schema({
     name:String,
     email:String,
     phone:String,
-    prodcut:String
+    product:String
     
 });
 
